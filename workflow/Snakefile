@@ -1,0 +1,65 @@
+import os
+import numpy as np
+
+configfile: "config.yaml"
+# ruleorder: merge_windows > coverage_windows
+
+
+
+localrules:  finish
+# --------------------------------------------------------------------------------
+rule finish:
+    input:
+        enrichment = expand(
+            os.path.join(
+                config["output_dir"],
+                "{method_type}",
+                "{experiment}",
+                "motif_analysis_crossvalidation",
+                "{run}",
+                "{crosslink_type}",
+                "motif_enrichment.tsv"),
+            method_type=config["method_types"],
+            experiment=config["EXPERIMENT_SET"],
+            run=[f'run{i}' for i in np.arange(int(config['runs']))],
+            crosslink_type=config["peak_center"]),
+        enrichment_total = expand(
+            os.path.join(
+                config["output_dir"],
+                "{method_type}",
+                "{experiment}",
+                "motif_analysis_final",
+                "{crosslink_type}",
+                "motif_enrichment.tsv"),
+            method_type=config["method_types"],
+            experiment=config["EXPERIMENT_SET"],
+            crosslink_type=config["peak_center"])
+            # test = expand(
+            # os.path.join(
+            # config["output_dir"],
+            # "GN",
+            # "{experiment}",
+            # "{experiment}_total_peaks.csv"
+            # ),
+            # experiment=config["EXPERIMENT_SET"][0])
+
+            # experiment=config[config["EXPERIMENT_SET"][0]]["replicates"])
+
+
+
+if config['seq_type'] == 'pe':
+    if ('TR' in config['method_types']) & ('GN' in config['method_types']):
+        include: 'rules/rcrunch_preprocessing_pe.smk'
+        include: 'rules/rcrunch_genomic_pe.smk'
+        include: 'rules/rcrunch_transcriptomic_pe.smk'
+        include: 'rules/rcrunch_motif_analysis.smk'
+    elif 'TR' in config['method_types']:
+        include: 'rules/rcrunch_preprocessing_pe.smk'
+        include: 'rules/rcrunch_transcriptomic_pe.smk'
+        include: 'rules/rcrunch_motif_analysis.smk'
+    elif 'GN' in config['method_types']:
+        include: 'rules/rcrunch_preprocessing_pe.smk'
+        include: 'rules/rcrunch_genomic_pe.smk'
+        include: 'rules/rcrunch_motif_analysis.smk'
+
+    
