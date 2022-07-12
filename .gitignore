@@ -5,6 +5,7 @@
 !scripts/
 !scripts/*
 !test
+!LICENSE
 !test/input_files_test/
 !test/input_files_test/ENCFF041KJT.chr20.fastq.gz
 !test/input_files_test/ENCFF462SCV.chr20.fastq.gz

@@ -9,15 +9,15 @@ RCRUNCH is a workflow that identifies binding sites of RNA Binding Proteins (RBP
 
 RCRUNCH consists of the following components:
 
-### <span style="color:purple">Read preporcessing</span>
-* 3' or 5' adapter remmoval
+### <span style="color:purple">Read preprocessing</span>
+* 3' or 5' adapter removal
 * alignment of reads to the reference genome
 * elimination of PCR duplicates (or UMIs)
 * optional removal of reads that originate from abundant non-coding RNAs (e.g. tRNAs) 
 
 
 ### <span style="color:green">Splice-Junction-aware (transcriptomic) approach</span>
-If the user chooses the Splice-Junction-aware (which we call the "TR" (transcriptomic) for simplicity) of RCRUNCH, some additional steps are performed to identify reads that map across splice junctions. That is, after all the preprocessing steps, the remaining alignments for foreground (CLIP) samples are used to select the most expressed transcript isoform for each gene and construct a dataset-specific transcriptome. Then the genome and transcriptome alignment files are jointly analyzed to identify the highest scoring alignment for each read. Peaks are then detected either on the genome or the transcriptome (see RCRUNCH core), treating individual transcripts as chromosomes. This approach allows for the detection and proper quantification of RBP binding sites in the vicinity or even spanning splice junctions.
+If the user chooses the Splice-Junction-aware approach (which we call the "TR" (transcriptomic) for simplicity) of RCRUNCH, some additional steps are performed to identify reads that map across splice junctions. That is, after all the preprocessing steps, the remaining alignments for foreground (CLIP) samples are used to select the most expressed transcript isoform for each gene and construct a dataset-specific transcriptome. Then the genome and transcriptome alignment files are jointly analyzed to identify the highest scoring alignment for each read. Peaks are then detected either on the genome or the transcriptome (see RCRUNCH model), treating individual transcripts as chromosomes. This approach allows for the detection and proper quantification of RBP binding sites in the vicinity or even spanning splice junctions.
 
 ### <span style="color:red">RCRUNCH model</span>
 
@@ -25,10 +25,10 @@ At the heart of RCRUNCH lies the RCRUNCH model for the detection of RBP-binding 
 1. Identify broader genomic regions that are enriched in reads in the foreground (CLIP) compared to the background sample
 2. Identify individual peaks within these selected broader windows
 
-> 📖 Please read the Methods Section of the manuscript for an extensive description of RCRUNCH.
+> 📖 Please read the "Methods" Section of the manuscript for an extensive description of RCRUNCH.
 
 ### <span style="color:blue">Motif analysis</span>
-The last part of RCRUNCH is the de-novo prediction of binding motifs and the computation of enrichment scores for known (e.g. from ATtRACT) and de-novo motifs for the RBP of interest.
+The last part of RCRUNCH is the de-novo prediction of binding motifs and the computation of enrichment scores for known (e.g. from [ATtRACT](https://attract.cnic.es/search)) and de-novo motifs for the RBP of interest.
 
 <div align="left">
     <img width="50%" align="center" src=images/rcrunch_components.png>
@@ -48,7 +48,7 @@ The following dependencies need to be installed on your system to be able to ins
 
 ### 1. Clone the repository
 
-Go to the desired directory/folder on your file system, then clone/get the repository and move into the respective directory with:
+Go to the desired directory on your file system, then clone the repository and move into the RCRUNCH directory with:
 ```bash
 git clone https://git.scicore.unibas.ch/zavolan_group/pipelines/RCRUNCH.git
 cd RCRUNCH
@@ -57,13 +57,12 @@ cd RCRUNCH
 ### 2. Install Conda/Mamba
 
 Workflow dependencies can be conveniently installed with the [Conda](https://docs.conda.io/projects/conda/en/latest/index.html)
-package manager. We recommend that you install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) 
+package manager. If you haven't already, please install [Miniconda](https://docs.conda.io/en/latest/miniconda.html) 
 for your system (Linux). Be sure to select Python 3 option. 
 The workflow was built and tested with `miniconda 4.7.12`.
 Other versions are not guaranteed to work as expected.
 
-Given that Miniconda has been installed and is available in the current shell the first
-dependency for RCRUNCH is the [Mamba](https://github.com/mamba-org/mamba) package manager, which needs to be installed in
+In addition to Miniconda, you will need the [Mamba](https://github.com/mamba-org/mamba) package manager, which -if you don't have it yet- needs to be installed in
 the `base` conda environment with:
 
 ```bash
@@ -97,7 +96,7 @@ conda activate rcrunch
 
 In order to run RCRUNCH, please fill in the organism related data and the experiment-dependent parameters for the different samples in the file `config.yaml`.
 
-> ✨ For your convenience an empty config.yaml file is available to fill in.
+> ✨ For your convenience an empty [config.yaml](config.yaml) file is available to fill in.
 
 
 ### 5b. Dry run and DAG generation (optional)
@@ -129,8 +128,8 @@ Finally you can trigger the pipeline by running:
 bash run_local_singularity.sh
 ```
 
-- We also support, execution in the **SLURM** workload manager.
-If you use SLURM trigger RCRUNCH like this:
+- We also support execution in the **SLURM** workload manager.
+If you use SLURM start running RCRUNCH like this:
 
 ```bash
 bash run_slurm_singularity.sh
@@ -142,3 +141,21 @@ nohup bash run_local_singularity.sh &
 ```
 
 > ✨ Note: You can use any one of the: `nohup`, `screen` or `tmux`.
+
+## Testing
+To ensure that the version is working properly you can test it by:
+1. Activate the Conda environment with:
+```bash
+conda activate rcrunch
+```
+2. Run:
+```bash
+bash test/test_singularity_execution/test_local.sh
+```
+or for **SLURM** workload manager,
+```bash
+bash test/test_singularity_execution/test_slurm.sh
+```
+
+
+## Output architecture
