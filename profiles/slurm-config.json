@@ -1,0 +1,342 @@
+{
+  "__default__":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"1",
+  "mem":"40G",
+  "tmp":"40G",
+  "job-name": "{rule}.{wildcards}",
+  "output": "{params.cluster_log_path}/{rule}/{wildcards}-%j-%N.out"
+  },
+  "create_index":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"12",
+  "mem":"70G"
+  },
+  "create_csv_from_ensembl_gtf":
+  {
+  "qos":"6hours",
+  "time": "04:00:00",
+  "cpus-per-task":"8",
+  "mem":"40G"
+  },
+  "cutadapt":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"10",
+  "mem":"30G"
+  },
+  "GN_map_STAR":
+  {
+  "qos":"6hours",
+  "time": "01:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "GN_index_mappings":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "GN_sort_ribosome_rm":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "GN_umi_collapse":
+  {
+  "qos":"1day",
+  "time": "10:00:00",
+  "cpus-per-task":"1",
+  "mem":"80G"
+  },
+  "GN_read_frequencies":
+  {
+  "qos":"1day",
+  "time":"12:00:00",
+  "cpus-per-task":"1",
+  "mem":"50G"
+  },
+  "GN_sort_ncRNA_rm":
+  {
+  "qos":"6hours",
+  "time":"02:00:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "GN_sort_merged":
+  {
+  "qos":"6hours",
+  "time":"02:00:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "GN_genome_coverage":
+  {
+  "qos":"1day",
+  "time": "12:00:00",
+  "cpus-per-task":"6",
+  "mem":"60G"
+  },
+  "GN_enriched_regions":
+  {
+  "qos":"6hours",
+  "time": "04:00:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "GN_fit_peaks":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"12",
+  "mem":"40G"
+  },
+  "TR_initial_map_to_genome":
+  {
+  "qos":"6hours",
+  "time": "04:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "TR_umi_collapse":
+  {
+  "qos":"1day",
+  "time": "12:00:00",
+  "cpus-per-task":"1",
+  "mem":"80G"
+  },
+  "TR_sort_filtered":
+  {
+  "qos":"6hours",
+  "time": "02:30:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "TR_read_frequencies":
+  {
+  "qos":"6hours",
+  "time":"06:00:00",
+  "cpus-per-task":"1",
+  "mem":"70G"
+  },
+  "TR_sort_filtered":
+  {
+  "qos":"6hours",
+  "time": "02:30:00",
+  "cpus-per-task":"8",
+  "mem":"30G"
+  },
+  "TR_bam_to_fastq":
+  {
+  "qos":"6hours",
+  "time": "04:30:00",
+  "cpus-per-task":"1",
+  "mem":"40G"
+  },
+  "TR_bam_to_fastq_filtered":
+  {
+  "qos":"6hours",
+  "time": "04:30:00",
+  "cpus-per-task":"1",
+  "mem":"40G"
+  },
+  "TR_salmon_index":
+  {
+  "qos":"6hours",
+  "time": "04:30:00",
+  "cpus-per-task":"1",
+  "mem":"40G"
+  },
+  "TR_tr_quantification":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"8",
+  "mem":"40G"
+  },
+  "TR_transcriptome_index":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"12",
+  "mem":"70G"
+  },
+  "TR_map_to_transcriptome":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "TR_map_to_genome":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "TR_assign_to_gn_tr":
+  {
+  "qos":"1day",
+  "time": "24:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "TR_genome_coverage":
+  {
+  "qos":"1day",
+  "time": "12:00:00",
+  "cpus-per-task":"8",
+  "mem":"70G"
+  },
+  "TR_transcriptome_coverage":
+  {
+  "qos":"1day",
+  "time":"12:00:00",
+  "cpus-per-task":"8",
+  "mem":"70G"
+  },
+  "TR_enriched_regions":
+  {
+  "qos":"6hours",
+  "time": "01:00:00",
+  "cpus-per-task":"1",
+  "mem":"15G"
+  },
+  "TR_fit_peaks":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"12",
+  "mem":"40G"
+  },
+  "phylogenetic_alignment__map_to_genome":
+  {
+  "qos":"6hours",
+  "time": "03:00:00",
+  "cpus-per-task":"8",
+  "mem":"40G"
+  },
+  "phylogenetic_alignment__adjust_psl":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"20G"
+  },
+  "phylogenetic_alignment__convert_psl":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"20G"
+  },
+  "phylogenetic_alignment__assemble_utrs":
+  {
+  "qos":"6hours",
+  "time": "04:00:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "phylogenetic_alignment__align_pairwise_multi_org":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"20G"
+  },
+  "motif_analysis_phylogenetic__randomise_sequences":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__randomise_sequences":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__PHYLOGIBBS":
+  {
+  "qos":"6hours",
+  "time": "03:00:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis_phylogenetic__PHYLOGIBBS":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__phylogibbs_to_transfac":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__motevo__motif_refinement_params":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__motevo__motif_refinement":
+  {
+  "qos":"6hours",
+  "time": "02:00:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__motevo__motif_trim":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis__motevo__format_wlib":
+  {
+  "qos":"30min",
+  "time": "00:30:00",
+  "cpus-per-task":"1",
+  "mem":"30G"
+  },
+  "motif_analysis_phylogenetic__motevo":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"10",
+  "mem":"50G"
+  },
+  "motif_analysis__motevo":
+  {
+  "qos":"6hours",
+  "time": "06:00:00",
+  "cpus-per-task":"12",
+  "mem":"50G"
+  },
+  "known_motif_posteriors_genomewide":
+  {
+  "qos":"1day",
+  "time": "18:00:00",
+  "cpus-per-task":"12",
+  "mem":"100G"
+  }
+  }
+  

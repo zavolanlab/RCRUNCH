@@ -1,0 +1,18 @@
+jobscript: "../slurm-jobscript.sh"
+cluster: "../slurm-submit.py"
+cluster-status: "../slurm-status.py"
+cluster-sidecar: "../slurm-sidecar.py"
+cluster-cancel: "scancel"
+max-jobs-per-second: 1
+max-status-checks-per-second: 10
+cores: 1024
+jobs: 250
+latency-wait: 60
+printshellcmds: true
+rerun-incomplete: true
+keep-going: true
+use-singularity: true
+singularity-args: "--bind $PWD"
+notemp: false
+no-hooks: true
+verbose: true

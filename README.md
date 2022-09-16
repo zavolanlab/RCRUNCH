@@ -50,7 +50,7 @@ The following dependencies need to be installed on your system to be able to ins
 
 Go to the desired directory on your file system, then clone the repository and move into the RCRUNCH directory with:
 ```bash
-git clone https://git.scicore.unibas.ch/zavolan_group/pipelines/RCRUNCH.git
+git clone https://github.com/zavolanlab/RCRUNCH.git
 cd RCRUNCH
 ```
 

@@ -3,6 +3,8 @@
 !README.md
 !Snakefile
 !scripts/
+!profiles/
+!profiles/*
 !scripts/*
 !test
 !LICENSE
