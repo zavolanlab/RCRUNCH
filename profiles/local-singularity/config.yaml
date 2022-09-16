@@ -1,0 +1,10 @@
+snakefile: "../../workflow/Snakefile"
+cores: 4
+printshellcmds: true
+rerun-incomplete: true
+keep-going: true
+use-singularity: true
+singularity-args: "--bind $PWD"
+notemp: false
+no-hooks: true
+verbose: true
