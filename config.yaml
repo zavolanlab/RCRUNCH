@@ -29,7 +29,7 @@
 
   # ------------------------------------------
   # Experiment specific info - REQUIRED
-  EXPERIMENT_SET : [experiment_name] # list of the experiments to be executed
+  EXPERIMENT_SET : ["PUM2_K562_ENCSR661ICQ_2"] # list of the experiments to be executed
 
   # Experiment specific info - REQUIRED
   # ***Note: an experiment refers to the foreground (replicates) and background (smis) samples
@@ -39,10 +39,10 @@
             # Make sure that the samples you merge have the same sample features (e.g paired, sense, dup_type)
             # Choose an informative experiment name
   experiment_name: {
-                    rbp: 'rbp name', #rna binding protein name, eg: PUM2,
-                    replicates: ["fg_sample1"], # sample(s) to be treated as foreground.
+                    rbp: 'PUM2', #rna binding protein name, eg: PUM2,
+                    replicates: ["ENCFF041KJT_ENCFF462SCV"], # sample(s) to be treated as foreground.
                                                 # If more than one they will be merged and treated as one sample
-                    smis: ["bg_sample1"], # sample(s) to be treated as background.
+                    smis: ["ENCFF616FCF_ENCFF495ZPY"] , # sample(s) to be treated as background.
                                           # If more than one they will be merged and treated as one sample
                     window_f: 300, # size to split windows. The window size should be at least double the fragment size
                     window_b: 300,  # size to split background windows. you can try larger background window than foreground if bg sample is sparse
@@ -53,9 +53,9 @@
   
   # Sample specific info - REQUIRED
   fg_sample1: {
-                mate1: "mate1_name", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                mate1: "ENCFF041KJT", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format
-                mate2: "mate2_name", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                mate2: "ENCFF462SCV", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format. 
                 paired: 2, # leave as is. used for future support of single-end data
                 sense: 2, # indicate which mate is the sense one (same direction as the gene) 
@@ -68,9 +68,9 @@
                 mate2_5p: "input_files/mate2_5p.fasta" #fasta file containing adapters of 5p of mate2 to be removed
   }
   bg_sample1: { 
-                mate1: "mate1_name", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                mate1: "ENCFF616FCF", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format
-                mate2: "mate2_name", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                mate2: "ENCFF495ZPY", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format. 
                 paired: 2, # leave as is. used for future support of single-end data
                 sense: 2, # indicate which mate is the sense one (same direction as the gene) 
