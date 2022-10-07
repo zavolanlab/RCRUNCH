@@ -38,7 +38,7 @@
             # as one sample (This functionality is useful for treating technical replicates as one sample)
             # Make sure that the samples you merge have the same sample features (e.g paired, sense, dup_type)
             # Choose an informative experiment name
-  experiment_name: {
+  PUM2_K562_ENCSR661ICQ_2: {
                     rbp: 'PUM2', #rna binding protein name, eg: PUM2,
                     replicates: ["ENCFF041KJT_ENCFF462SCV"], # sample(s) to be treated as foreground.
                                                 # If more than one they will be merged and treated as one sample
@@ -52,7 +52,7 @@
                   }
   
   # Sample specific info - REQUIRED
-  fg_sample1: {
+  ENCFF041KJT_ENCFF462SCV: {
                 mate1: "ENCFF041KJT", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format
                 mate2: "ENCFF462SCV", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
@@ -67,7 +67,7 @@
                 mate2_3p: "input_files/mate2_3p.fasta", #fasta file containing adapters of 3p of mate2 to be removed
                 mate2_5p: "input_files/mate2_5p.fasta" #fasta file containing adapters of 5p of mate2 to be removed
   }
-  bg_sample1: { 
+  ENCFF616FCF_ENCFF495ZPY: { 
                 mate1: "ENCFF616FCF", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format
                 mate2: "ENCFF495ZPY", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
