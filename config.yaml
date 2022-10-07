@@ -20,10 +20,10 @@
 
   #  organism related data - REQUIRED - FILL-IN
   genome: input_files/Homo_sapiens.GRCh38.dna_sm.fa # path_to_genome_file (.fa)
-  genome_tag: "hg38" # organism tag. you can leave as is
+  genome_tag: "hg38" # organism tag. you can leave as is [WHY DO YOU SAY THAT? WHAT IF I HAVE A DIFFERENT ORGANISM?]
 
   #  organism TR related data - OPTIONAL 
-  # *** Note: Specify only if you use the TR in "method_types"
+  # *** Note: Specify only if you use the TR in "method_types"[IF NOT USING TR, SHOULD I STILL SPECIFY THE KEYS gtf AND transcriptome WITH EMPTY VALUES, OR DO I HAVE TO DELETE THE KEYS?]
   gtf: input_files/Homo_sapiens.GRCh38.98.chr.gtf # path_to_annotation_file (.gtf)
   transcriptome: input_files/Homo_sapiens.GRCh38.transcriptome.fa # path_to_transcriptome_file (.fa)
 
@@ -35,7 +35,7 @@
   # ***Note: an experiment refers to the foreground (replicates) and background (smis) samples
             # you want to apply the RCRUNCH model to. You can use more than one foreground or
             # background samples per experiment. These samples will be merged together and treated 
-            # as one sample (This functionality is useful for treating technical replicates as one sample)
+            # as one sample [THIS SOUNDS A BIT AS IF FOREGROUND AND BACKGROUND ARE GONNA BE MERGED... ONLY A BIT ;)] (This functionality is useful for treating technical replicates as one sample)
             # Make sure that the samples you merge have the same sample features (e.g paired, sense, dup_type)
             # Choose an informative experiment name
   experiment_name: {
@@ -52,6 +52,7 @@
                   }
   
   # Sample specific info - REQUIRED
+  #[DO THE KEYS HAVE TO BE THE SAME AS THE SAMPLE NAMES SPECIFIED ABOVE OR VICE VERSA?]
   fg_sample1: {
                 mate1: "mate1_name", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                                      # files are assumed to be in fastq.gz format
@@ -61,7 +62,7 @@
                 sense: 2, # indicate which mate is the sense one (same direction as the gene) 
                 format: "encode", # if fastq file comes from encode leave as is. otherwise put as 'standard' 
                 dup_type: "umis", # types of duplicates to be removed. options: "umis", "duplicates", "with_duplicates"
-                                  # the latter option means that no deduplication occurs
+                                  # the latter option means that no deduplication occurs[IS PERFORMED?]
                 mate1_3p: "input_files/mate1_3p.fasta", #fasta file containing adapters of 3p of mate1 to be removed
                 mate1_5p: "input_files/mate1_5p.fasta", #fasta file containing adapters of 5p of mate1 to be removed
                 mate2_3p: "input_files/mate2_3p.fasta", #fasta file containing adapters of 3p of mate2 to be removed
@@ -95,7 +96,7 @@
   fragment_size: 80             # estimated fragment size of the experiment
   
 
-  ## RCRUNCH specific options - DEFAULTS - Use with care
+  ## RCRUNCH specific options - DEFAULTS - Use with care [USE WITH CARE OR CHANGE WITH CARE? WHAT'S THE DIFFERENCE TO THOSE ABOVE? OPTIONAL VS REQUIRED?]
   seq_type: "pe"                # paired end - currently only paired-end seq are allowed
   motif_lengths: [6, 8]         # Motif sizes to be considered.
   peak_center : ["crosslink", "peak_center"]   # whether to use  'crosslink' (position within where most reads start)
