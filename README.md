@@ -122,7 +122,7 @@ bash test/test_singularity_execution/test_local.sh
 ```
 > ✨ Note: This test has a running time of ~8 minutes when using 4 cores (Intel(R) Xeon(R) CPU E5-2630 v4 @ 2.20GHz)
 
-or for **SLURM** workload manager,
+or for **Slurm** workload manager,
 ```bash
 bash test/test_singularity_execution/test_slurm.sh
 ```
@@ -163,8 +163,8 @@ Finally you can trigger the pipeline by running:
 bash run_local_singularity.sh
 ```
 
-- We also support execution in the **SLURM** workload manager.
-If you use SLURM start running RCRUNCH like this:
+- We also support execution in the **Slurm** workload manager.
+If you use Slurm start running RCRUNCH like this:
 
 ```bash
 bash run_slurm_singularity.sh
