@@ -12,25 +12,25 @@ echo "***Fetching input samples for PUM2 from encode (eclip foreground and backg
 if [[ -e "../input_files/ENCFF041KJT.fastq.gz" ]]; then
     echo "file exists. 1/4 done"
 else
-    wget https://www.encodeproject.org/files/ENCFF041KJT/@@download/ENCFF041KJT.fastq.gz -P ../input_files_test -q -nc
+    wget https://www.encodeproject.org/files/ENCFF041KJT/@@download/ENCFF041KJT.fastq.gz -P ../input_files -q -nc
     echo "1/4 done"
 fi
 if [[ -e "../input_files/ENCFF462SCV.fastq.gz" ]]; then
     echo "file exists. 2/4 done"
 else
-    wget https://www.encodeproject.org/files/ENCFF462SCV/@@download/ENCFF462SCV.fastq.gz -P ../input_files_test -q -nc
+    wget https://www.encodeproject.org/files/ENCFF462SCV/@@download/ENCFF462SCV.fastq.gz -P ../input_files -q -nc
     echo "2/4 done"
 fi
 if [[ -e "../input_files/ENCFF616FCF.fastq.gz" ]]; then
     echo "file exists. 3/4 done"
 else
-    wget https://www.encodeproject.org/files/ENCFF616FCF/@@download/ENCFF616FCF.fastq.gz -P ../input_files_test -q -nc
+    wget https://www.encodeproject.org/files/ENCFF616FCF/@@download/ENCFF616FCF.fastq.gz -P ../input_files -q -nc
     echo "3/4 done"
 fi
 if [[ -e "../input_files/ENCFF495ZPY.fastq.gz" ]]; then
     echo "file exists. 4/4 done"
 else
-    wget https://www.encodeproject.org/files/ENCFF495ZPY/@@download/ENCFF495ZPY.fastq.gz -P ../input_files_test -q -nc
+    wget https://www.encodeproject.org/files/ENCFF495ZPY/@@download/ENCFF495ZPY.fastq.gz -P ../input_files -q -nc
     echo "4/4 done"
 fi
 
