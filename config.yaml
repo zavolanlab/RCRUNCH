@@ -33,7 +33,7 @@
   input_dir: "input_files" # directory containing files to be used by RCRUNCH
 
   #  organism related data - REQUIRED - FILL-IN
-  genome: input_files/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz 
+  genome: input_files/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa
         # path_to_genome_file (.fa)
   genome_tag: "hg38" 
         # organism tag - you can chose your own for labeling the organism
