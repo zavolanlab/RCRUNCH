@@ -1,5 +1,5 @@
 ---
-  # ----------------------------------------------------------------------------------------------
+  # ============================================================================
   #  INPUT/OUTPUT RELATED PATHS - DEFAULT VALUES PROVIDED 
   # *** Note: Make sure these paths are within the cloned RCRUNCH repo
   
@@ -8,118 +8,205 @@
   local_log: "logs/local_log"
   cluster_log: "logs/cluster_log"
   
+  #____________ SCHEMATIC OVERVIEW OF THE INPUT STRUCTURE_______________________
+  # experiment set
+  #   --- experiment_1 (experiment specific info)
+  #         -- foreground
+  #             - sample_1 { sample specific info}
+  #               ...
+  #             - sample_n { sample specific info}
+  #         -- background: sample_1 (sample_2 ...sample_n)
+  #              - sample_1 { sample specific info}
+  #               ...
+  #             - sample_n { sample specific info}
+  #    ...
+  #   --- experiment_n (experiment specific info)
+  #_____________________________________________________________________________
+
   # INPUT
-  # ------------------------------------------
+  # ----------------------------------------------------------------------------
   # *** Note: Make sure these paths are within the cloned RCRUNCH repo
-  # *** You can create soft-links within the input_files folder if you already
+  # *** Create soft-links within the input_files folder if you already
   #     have the files stored somewhere else in your system
 
-  
   # - DEFAULT VALUES PROVIDED 
   input_dir: "input_files" # directory containing files to be used by RCRUNCH
 
   #  organism related data - REQUIRED - FILL-IN
-  genome: input_files/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz # path_to_genome_file (.fa)
-  genome_tag: "hg38" # organism tag. you can leave as is
+  genome: input_files/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz 
+        # path_to_genome_file (.fa)
+  genome_tag: "hg38" 
+        # organism tag - you can chose your own for labeling the organism
 
-  #  organism TR related data - OPTIONAL 
+  #_____________________________________________________________________________
+  #  transcriptomic approach (TR) related data - OPTIONAL 
   # *** Note: Specify only if you use the TR in "method_types"
-  gtf: input_files/Homo_sapiens.GRCh38.98.chr.gtf # path_to_annotation_file (.gtf)
-  transcriptome: input_files/Homo_sapiens.GRCh38.transcriptome.fa # path_to_transcriptome_file (.fa)
-
-  # ------------------------------------------
-  # Experiment specific info - REQUIRED
-  EXPERIMENT_SET : ["PUM2_K562_ENCSR661ICQ_2"] # list of the experiments to be executed
-
-  # Experiment specific info - REQUIRED
-  # ***Note: an experiment refers to the foreground (replicates) and background (smis) samples
-            # you want to apply the RCRUNCH model to. You can use more than one foreground or
-            # background samples per experiment. These samples will be merged together and treated 
-            # as one sample (This functionality is useful for treating technical replicates as one sample)
-            # Make sure that the samples you merge have the same sample features (e.g paired, sense, dup_type)
-            # Choose an informative experiment name
-  PUM2_K562_ENCSR661ICQ_2: {
-                    rbp: 'PUM2', #rna binding protein name, eg: PUM2,
-                    replicates: ["ENCFF041KJT_ENCFF462SCV"], # sample(s) to be treated as foreground.
-                                                # If more than one they will be merged and treated as one sample
-                    smis: ["ENCFF616FCF_ENCFF495ZPY"] , # sample(s) to be treated as background.
-                                          # If more than one they will be merged and treated as one sample
-                    window_f: 300, # size to split windows. The window size should be at least double the fragment size
-                    window_b: 300,  # size to split background windows. you can try larger background window than foreground if bg sample is sparse
-                    step_size: 150, # step of sliding windows. eg. if window size=300 and step=150 two successive windows will have half overlap
-                                    # if you choose step size equal to the window size, the windows will have no overlap
-                    background_type: "standard" # related to future functionality. leave as is
-                  }
+  gtf: input_files/Homo_sapiens.GRCh38.98.chr.gtf 
+        # path_to_annotation_file (.gtf)
+  transcriptome: input_files/Homo_sapiens.GRCh38.transcriptome.fa 
+        # path_to_transcriptome_file (.fa)
+  #_____________________________________________________________________________
   
-  # Sample specific info - REQUIRED
+  EXPERIMENT_SET : ["PUM2_K562_ENCSR661ICQ_2"] 
+        # experiment label names chosen by user 
+        # each of these labels has specifications as indicated below
+        # only the experiments specified here will be executed by RCRUNCH
+  
+  #______________ Experiment specific info - REQUIRED___________________________
+
+  # ***Note: each of the experimental data set consists of foreground (CLIP) 
+          # and background samples (e.g RNA-seq, SMInput). You can use more 
+          # than one foreground or background samples per experiment. These
+          # samples will be merged together and treated as one sample (This 
+          # functionality is useful for treating technical replicates as one
+          # sample). Make sure that the samples you merge are of the same 
+          # kind (e.g paired, sense, dup_type)
+  
+  # results will be collected in folders whose names are composed from the 
+  # experiment labels name ; use informative values as shown here
+  PUM2_K562_ENCSR661ICQ_2: {
+    # experiment labels name
+                    rbp: 'PUM2', 
+                        # rna binding protein name, eg: PUM2,
+                        # RCRUNCH searches for motifs in ATtRACT with this name
+                        # ATtRACT rbp naming conventions should be followed
+                    replicates: ["ENCFF041KJT_ENCFF462SCV"], 
+                        # user specified sample(s) labels treated as foreground
+                        # if more than one, merged and treated as one sample
+                        # each of the samples has a speicification below tagged
+                        # with the sample label name  
+                    smis: ["ENCFF616FCF_ENCFF495ZPY"] ,
+                        # user specified sample(s) labels treated as background
+                        # if more than one, merged and treated as one sample
+                        # each of the samples has a speicification below tagged
+                        # with the sample label name  
+                    window_f: 300, 
+                        # size to split windows
+                        # should be at least double the fragment size
+                    window_b: 300,  
+                        # size to split background windows
+                        # larger background window than foreground can be used
+                        # if bg sample is sparse
+                    step_size: 150, 
+                        # step of sliding windows
+                        # eg. if window size=300 and step=150 two successive 
+                        # windows will have half overlap
+                        # if you choose step size equal to the window size,
+                        #  the windows will have no overlap
+                    background_type: "standard" 
+                        # related to future functionality
+                        # leave as is
+                  }
+
+  #______________ Sample specific info - REQUIRED_______________________________
+
   ENCFF041KJT_ENCFF462SCV: {
-                mate1: "ENCFF041KJT", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
-                                     # files are assumed to be in fastq.gz format
-                mate2: "ENCFF462SCV", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
-                                     # files are assumed to be in fastq.gz format. 
-                paired: 2, # leave as is. used for future support of single-end data
-                sense: 2, # indicate which mate is the sense one (same direction as the gene) 
-                format: "encode", # if fastq file comes from encode leave as is. otherwise put as 'standard' 
-                dup_type: "umis", # types of duplicates to be removed. options: "umis", "duplicates", "with_duplicates"
-                                  # the latter option means that no deduplication occurs
-                mate1_3p: "input_files/mate1_3p.fasta", #fasta file containing adapters of 3p of mate1 to be removed
-                mate1_5p: "input_files/mate1_5p.fasta", #fasta file containing adapters of 5p of mate1 to be removed
-                mate2_3p: "input_files/mate2_3p.fasta", #fasta file containing adapters of 3p of mate2 to be removed
-                mate2_5p: "input_files/mate2_5p.fasta" #fasta file containing adapters of 5p of mate2 to be removed
+                mate1: "ENCFF041KJT",
+                # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                # files are assumed to be in fastq.gz format
+                mate2: "ENCFF462SCV", 
+                # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                # files are assumed to be in fastq.gz format. 
+                paired: 2, 
+                # leave as is. used for future support of single-end data
+                sense: 2, 
+                # indicate if mate 1 is sense (1) or antisense (2)
+                # for paired-end reads the other mate is assumed to 
+                # be the opposite
+                format: "encode", 
+                # if fastq file comes from encode leave as is
+                # otherwise put as 'standard' 
+                dup_type: "umis", 
+                # types of duplicates to be removed
+                # options: "umis", "duplicates", "with_duplicates"
+                # the latter option means that no deduplication occurs
+                mate1_3p: "input_files/mate1_3p.fasta",
+                # fasta file containing adapters of 3p of mate1 to be removed
+                # multiple adapters are used here as described in analysis
+                # of encode data
+                # fix accordingly for your test case
+                # put 'XXXXXXX' if you do not desire any adapter trimming 
+                mate1_5p: "input_files/mate1_5p.fasta",
+                # fasta file containing adapters of 5p of mate1 to be removed
+                mate2_3p: "input_files/mate2_3p.fasta",
+                # fasta file containing adapters of 3p of mate2 to be removed
+                mate2_5p: "input_files/mate2_5p.fasta"
+                # fasta file containing adapters of 5p of mate2 to be removed
   }
   ENCFF616FCF_ENCFF495ZPY: { 
-                mate1: "ENCFF616FCF", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
-                                     # files are assumed to be in fastq.gz format
-                mate2: "ENCFF495ZPY", # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
-                                     # files are assumed to be in fastq.gz format. 
-                paired: 2, # leave as is. used for future support of single-end data
-                sense: 2, # indicate which mate is the sense one (same direction as the gene) 
-                format: "encode", # if fastq file comes from encode leave as is. otherwise put as 'standard' 
-                dup_type: "umis", # types of duplicates to be removed. options: "umis", "duplicates", "with_duplicates"
-                                  # the latter option means that no deduplication occurs
-                mate1_3p: "input_files/mate1_3p.fasta", #fasta file containing adapters of 3p of mate1 to be removed
-                mate1_5p: "input_files/mate1_5p.fasta", #fasta file containing adapters of 5p of mate1 to be removed
-                mate2_3p: "input_files/mate2_3p.fasta", #fasta file containing adapters of 3p of mate2 to be removed
-                mate2_5p: "input_files/mate2_5p.fasta" #fasta file containing adapters of 5p of mate2 to be removed
+                mate1: "ENCFF616FCF", 
+                mate2: "ENCFF495ZPY",
+                paired: 2, 
+                sense: 2,
+                format: "encode", 
+                dup_type: "umis",
+                mate1_3p: "input_files/mate1_3p.fasta",
+                mate1_5p: "input_files/mate1_5p.fasta",
+                mate2_3p: "input_files/mate2_3p.fasta",
+                mate2_5p: "input_files/mate2_5p.fasta"
   }
-  # ----------------------------------------------------------------------------------------------
-  # RCRUNCH specific options - REQUIRED - DEFAULT VALUES SUGGESTED 
-  method_types : ["GN", "TR"]   # options: GN, TR  if you want BOTH methods, you can specify ['GN', 'TR']
-                                # This will create both transcriptomic and genomic predictions
-  multimappers: 1               # change if you want to accept reads that map to multiple regions 
-                                # (the number indicates the number of regions a read can map to at
-                                # the same time)
-  FDR : "0.1"                   # False discovery cutoff. Peaks with score above the cutoff will be 
-                                # included in the total_peaks.csv file 
-  sjdbOverhang: 49              # maximum read length of the read mates -1
-  fragment_size: 80             # estimated fragment size of the experiment
+
+  #_________RCRUNCH specific options - REQUIRED - DEFAULT VALUES SUGGESTED _____
+   
+  method_types : ["GN", "TR"]   
+            # options: GN, TR  
+            # if you want BOTH methods, you can specify ['GN', 'TR']
+            # ['GN', 'TR'] will create both transcriptomic & genomic predictions
+  multimappers: 1 
+            # change if you want to accept reads that map to multiple regions 
+            # (the number indicates the number of regions a read can map to at
+            # the same time)
+  FDR : "0.1"
+            # false discovery cutoff
+            # peaks with score above the cutoff will be
+            # included in the total_peaks.csv file
   
+  sjdbOverhang: 49              
+            # maximum read length of the read mates -1
+  fragment_size: 80
+            # estimated fragment size of the experiment
 
-  ## RCRUNCH specific options - DEFAULTS - Use with care
-  seq_type: "pe"                # paired end - currently only paired-end seq are allowed
-  motif_lengths: [6, 8]         # Motif sizes to be considered.
-  peak_center : ["crosslink", "peak_center"]   # whether to use  'crosslink' (position within where most reads start)
-                                # or 'peak_center' as the center of the peak
-                                #  when searching for motifs. You can use both by adding ["crosslink", "peak_center"]
-  runs: 2                       # number of randomisations of 'training' and 'test' sets
-                                # in the cross-validation of motif enrichment
-  random_sequences_per_peak: 20 # Used in the background creation during the motif analysis step.
+  #________RCRUNCH specific options - DEFAULTS - Use with care__________________
 
-  # -------------ADDITIONAL LIBRARIES  -----------------------------------
-  ## ncRNA filtering - OPTIONAL
+  seq_type: "pe"
+            # paired end - currently only paired-end seq are allowed
+  motif_lengths: [6, 8]
+            # motif sizes to be considered.
+  peak_center : ["crosslink", "peak_center"]   
+            # use 'crosslink' (position where most reads start)
+            # or 'peak_center' as the center of the peak when searching for 
+            # motifs ; you can use both by adding ["crosslink", "peak_center"]
+  runs: 2   
+            # number of randomisations of 'training' and 'test' sets
+            # in the cross-validation of motif enrichment
+            # the more randomisations the more reliable the result
+  random_sequences_per_peak: 20
+            # used in the background creation during the motif analysis step
+  
+  #___________________________ADDITIONAL LIBRARIES______________________________
+
+  # ncRNA filtering based on RNAcentral annotation - OPTIONAL
   # Leave empty if you haven't downloaded this library.
   # ncRNAs: ""
   # ncRNA_biotypes: []
-  ncRNAs: "input_files/homo_sapiens.GRCh38.gff3" # path_to_ncrna_database (.gff3).
-  ncRNA_biotypes: [] # e.g 'rRNA', 'snRNA'. If empty no filtering will take place.
-                     # If it is specified you need to specify ncRNAs
+  ncRNAs: "input_files/homo_sapiens.GRCh38.gff3" 
+          # path_to_ncrna_database (.gff3).
+  ncRNA_biotypes: [] 
+          # e.g 'rRNA', 'snRNA'
+          # if empty no filtering will take place.
+          # if it is specified you need to specify ncRNAs
   
   # Include ATtRACT known motifs in the analysis - OPTIONAL
   # Leave empty if you haven't downloaded this library.
   # wlib_names: ""
   # wlib_pwms: ""
   # wlib_organism: ""
-  wlib_names: "input_files/ATtRACT/ATtRACT_db.txt" # path_to_attract_database_names (.txt) 
-  wlib_pwms: "input_filesATtRACT/pwm.txt" # path_to_attract_database_pwm (.txt)"/path/to/attract_database_pwm.txt"
-  wlib_organism: "Homo_sapiens" # change in case of different organism
+  wlib_names: "input_files/ATtRACT/ATtRACT_db.txt" 
+          # path_to_attract_database_names (.txt) 
+  wlib_pwms: "input_files/ATtRACT/pwm.txt" 
+          # path_to_attract_database_pwm (.txt)
+          # "/path/to/attract_database_pwm.txt"
+  wlib_organism: "Homo_sapiens" 
+          # change in case of different organism
+# ============================================================================        
 ...

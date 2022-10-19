@@ -1,13 +1,15 @@
 #!/bin/bash
-set -eo pipefail  # ensures that script exits at first command that exits with non-zero status
-set -u  # ensures that script exits when unset variables are used
+set -eo pipefail  
+# ensures that script exits at first command that exits with non-zero status
+set -u
+# ensures that script exits when unset variables are used
 user_dir=$PWD
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-
 cd $script_dir
 
-echo "***Fetching input samples for PUM2 from encode (eclip foreground and background samples)..."
+echo "***Fetching input samples for PUM2 from encode \
+    (eclip foreground and background samples)..."
 
 if [[ -e "../input_files/ENCFF041KJT.fastq.gz" ]]; then
     echo "file exists. 1/4 done"
@@ -63,7 +65,7 @@ else
 fi
 
 
-echo "***Fetching attract motif database..."
+echo "***Fetching ATtRACT motif database..."
 if [[ -d "../input_files/ATtRACT" ]]; then
     echo "folder already exists, done"
 else
@@ -72,7 +74,7 @@ else
     echo "done"
 fi
 
-echo "***Fetching RNA-central database..."
+echo "***Fetching RNAcentral database..."
 if  [[ -e "../input_files/homo_sapiens.GRCh38.gff3" ]] ; then
     echo "file already exists, done"
 else
