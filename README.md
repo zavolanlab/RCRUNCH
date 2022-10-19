@@ -50,7 +50,7 @@ The following dependencies need to be installed on your system to be able to ins
 
 A real e.g human CLIP experiment would require:
 - ~40 GB of RAM (mapping of human genome and building genome index relies on this requirement)
-- 100 GB of disk space
+- ~50 GB of disk space (based on the real life experiment used in the  [config.yaml](config.yaml)). About half of this (~28 GB) is due to the STAR index, which can be reused for several clip experiments, 
 - 1 core (although the more cores the more you take advantage of the parallelisation of execution)
 
 

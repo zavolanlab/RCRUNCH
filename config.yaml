@@ -19,7 +19,7 @@
   input_dir: "input_files" # directory containing files to be used by RCRUNCH
 
   #  organism related data - REQUIRED - FILL-IN
-  genome: input_files/Homo_sapiens.GRCh38.dna_sm.fa # path_to_genome_file (.fa)
+  genome: input_files/Homo_sapiens.GRCh38.dna_sm.primary_assembly.fa.gz # path_to_genome_file (.fa)
   genome_tag: "hg38" # organism tag. you can leave as is
 
   #  organism TR related data - OPTIONAL 
@@ -119,7 +119,7 @@
   # wlib_names: ""
   # wlib_pwms: ""
   # wlib_organism: ""
-  wlib_names: "input_files/ATtRACT_db.txt" # path_to_attract_database_names (.txt) 
-  wlib_pwms: "input_files/pwm.txt" # path_to_attract_database_pwm (.txt)"/path/to/attract_database_pwm.txt"
+  wlib_names: "input_files/ATtRACT/ATtRACT_db.txt" # path_to_attract_database_names (.txt) 
+  wlib_pwms: "input_filesATtRACT/pwm.txt" # path_to_attract_database_pwm (.txt)"/path/to/attract_database_pwm.txt"
   wlib_organism: "Homo_sapiens" # change in case of different organism
 ...
