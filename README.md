@@ -17,21 +17,22 @@ RCRUNCH consists of the following components:
 
 
 ### <span style="color:green">Splice-Junction-aware (transcriptomic) approach</span>
-If the user chooses the Splice-Junction-aware approach (which we call the "TR" (transcriptomic) for simplicity) of RCRUNCH, some additional steps are performed to identify reads that map across splice junctions. That is, after all the preprocessing steps, the remaining alignments for foreground (CLIP) samples are used to select the most expressed transcript isoform for each gene and construct a dataset-specific transcriptome. Then the genome and transcriptome alignment files are jointly analyzed to identify the highest scoring alignment for each read. Peaks are then detected either on the genome or the transcriptome (see RCRUNCH model), treating individual transcripts as chromosomes. This approach allows for the detection and proper quantification of RBP binding sites in the vicinity or even spanning splice junctions.
+If the user chooses the Splice-Junction-aware approach (which we call the "TR" (transcriptomic) for simplicity) of RCRUNCH, some additional steps are performed to identify reads that map across splice junctions. That is, after all the preprocessing steps, the remaining alignments for foreground (CLIP) samples are used to select the most expressed transcript isoform for each gene and construct a dataset-specific transcriptome. Then the genome and transcriptome alignment files are jointly analyzed to identify the highest scoring alignment for each read. Peaks are then detected either on the genome (essentially the pre-mRNAs) or the transcriptome (see [RCRUNCH](#RCRUNCH_model) model). This approach allows for the detection and proper quantification of RBP binding sites in the vicinity or even spanning splice junctions.
 
-### <span style="color:red">RCRUNCH model</span>
+### <span style="color:red" id="RCRUNCH_model">RCRUNCH model</span>
 
 At the heart of RCRUNCH lies the RCRUNCH model for the detection of RBP-binding regions. Genome/transcriptome-wide identification of peaks corresponding to individual binding sites for an RBP is time consuming. For this reason RCRUNCH implements a two-step process:
 1. Identify broader genomic regions that are enriched in reads in the foreground (CLIP) compared to the background sample
 2. Identify individual peaks within these selected broader windows
 
-> 📖 Please read the "Methods" Section of the manuscript for an extensive description of RCRUNCH.
+> 📖 Please read the "Methods" Section of the [manuscript](https://www.biorxiv.org/content/10.1101/2022.07.06.498949v1) for an extensive description of RCRUNCH.
 
 ### <span style="color:blue">Motif analysis</span>
 The last part of RCRUNCH is the de-novo prediction of binding motifs and the computation of enrichment scores for known (e.g. from [ATtRACT](https://attract.cnic.es/search)) and de-novo motifs for the RBP of interest.
 
 <div align="left">
-    <img width="50%" align="center" src=images/rcrunch_components.png>
+    <img width="100%" align="center" src=images/rcrunch_components.png>
+    <figcaption align = "center"><b> Overview of the RCRUNCH analysis steps  </b></figcaption>
 </div> 
 
 
@@ -70,7 +71,7 @@ for your system (Linux). Be sure to select Python 3 option.
 The workflow was built and tested with `miniconda 4.7.12`.
 Other versions are not guaranteed to work as expected.
 
-In addition to Miniconda, you will need the [Mamba](https://github.com/mamba-org/mamba) package manager, which -if you don't have it yet- needs to be installed in
+In addition to Miniconda, you are strongly advised to use [Mamba](https://github.com/mamba-org/mamba) package manager, which -if you don't have it yet- needs to be installed in
 the `base` conda environment with:
 
 ```bash
@@ -122,12 +123,16 @@ bash test/test_singularity_execution/test_slurm.sh
 
 In order to run RCRUNCH, please fill in the organism related data and the experiment-dependent parameters for the different samples in the file `config.yaml`.
 
-> ✨ For your convenience an empty [config.yaml](config.yaml) file is available to fill in.
+> ✨ For your convenience a [pre-filled config.yaml](config.yaml) file is available, based on a real example. This can be adapted accordingly.
+If you want to execute RCRUNCH with this config as is you need to download the required files by running:
+```
+bash get_extra_annotation.sh
+``` 
 
 
 ### 6b. Dry run and DAG generation (optional)
 
-You can generate a test execution of the pipeline without producing any actual results (referred to as dry run) by running:
+You can perform a test execution of the pipeline without producing any actual results (referred to as dry run) by running:
 
 ```bash
 snakemake \
