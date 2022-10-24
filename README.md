@@ -99,7 +99,7 @@ conda activate rcrunch
 ```
 
 ### 5. Test 
-To ensure that the version is working properly you can test it by:
+To ensure that the code is working properly you can test it by:
 1. Activate the Conda environment with:
 ```bash
 conda activate rcrunch
