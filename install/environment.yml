@@ -6,3 +6,4 @@ channels:
 dependencies:
   - snakemake=7.2.1
   - biopython=1.79
+  - tabulate=0.8.10
