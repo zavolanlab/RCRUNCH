@@ -119,7 +119,7 @@
                 dup_type: "umis", 
                 # types of duplicates to be removed
                 # options: "umis", "duplicates", "with_duplicates"
-                # the latter option means that no deduplication occurs
+                # the latter option means that no deduplication is performed
                 mate1_3p: "input_files/mate1_3p.fasta",
                 # fasta file containing adapters of 3p of mate1 to be removed
                 # multiple adapters are used here as described in analysis
@@ -166,7 +166,7 @@
   fragment_size: 80
             # estimated fragment size of the experiment
 
-  #________RCRUNCH specific options - DEFAULTS - Use with care__________________
+  #___RCRUNCH specific options - DEFAULTS - Be careful of the values you use ___
 
   seq_type: "pe"
             # paired end - currently only paired-end seq are allowed
@@ -180,6 +180,8 @@
             # number of randomisations of 'training' and 'test' sets
             # in the cross-validation of motif enrichment
             # the more randomisations the more reliable the result
+            # too many runs will make RCRUNCH slower
+            # a number ~2-10 is suggested
   random_sequences_per_peak: 20
             # used in the background creation during the motif analysis step
   
