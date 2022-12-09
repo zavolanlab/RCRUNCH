@@ -1,9 +1,8 @@
-name: rcrunch
+name: rcrunch1
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
-  - snakemake=7.2.1
-  - biopython=1.79
-  - tabulate=0.8.10
+  - bioconda::snakemake=7.2.1
+  - conda-forge::biopython=1.79
+  - conda-forge::tabulate=0.8.10
