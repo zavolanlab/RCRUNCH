@@ -1,4 +1,4 @@
-name: rcrunch1
+name: rcrunch
 channels:
   - bioconda
   - conda-forge
