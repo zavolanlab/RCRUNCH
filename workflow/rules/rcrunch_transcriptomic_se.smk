@@ -9,7 +9,7 @@
 # ________________________________________________________________________________
 import os
 
-rule TR_initial_map_to_genome_pe:
+rule TR_initial_map_to_genome_se:
     """
         Initial mapping to the genome using STAR.
     """
@@ -19,23 +19,14 @@ rule TR_initial_map_to_genome_pe:
             "STAR_index",
             "chrNameLength.txt"
             ),
-        reads1 = lambda wildcards:
+        reads = lambda wildcards:
             expand(
                 os.path.join(
                     config["output_dir"],
                     "cutadapt",
-                    "{sample}_mate1.pe.cutadapt_{format}.fastq.gz"),
+                    "{sample}_mate1.se.cutadapt_{format}.fastq.gz"),
                 sample=wildcards.sample,
-                format=config[wildcards.sample]['format'],
-                ),
-        reads2 = lambda wildcards:
-            expand(
-                os.path.join(
-                    config["output_dir"],
-                    "cutadapt",
-                    "{sample}_mate2.pe.cutadapt_{format}.fastq.gz"),
-                sample=wildcards.sample,
-                format=config[wildcards.sample]['format'],
+                format=config[wildcards.sample]['format']
                 ),
 
     output:
@@ -45,14 +36,16 @@ rule TR_initial_map_to_genome_pe:
                 "TR",
                 "initial_map",
                 "{sample}",
-                "{sample}.pe.bam")),
+                "{sample}.se.bam")
+                ),
         logfile = temp(
             os.path.join(
                 config["output_dir"],
                 "TR",
                 "initial_map",
                 "{sample}",
-                "{sample}.pe.Log.final.out")),
+                "{sample}.se.Log.final.out")
+                ),
 
     params:
         cluster_log_path = config["cluster_log"],
@@ -65,11 +58,11 @@ rule TR_initial_map_to_genome_pe:
             "TR",
             "initial_map",
             "{sample}",
-            "{sample}.pe."),
+            "{sample}.se."),
         multimappers = config["multimappers"]
-
+    
     shadow: "full"
-
+    
     singularity:
         "docker://zavolab/star:2.6.0a"
 
@@ -80,19 +73,19 @@ rule TR_initial_map_to_genome_pe:
             config["local_log"],
             "TR",
             "preprocessing",
-            "{sample}_initial_map_to_genome.pe.stdout.log"),
+            "{sample}_initial_map_to_genome.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "preprocessing",
-            "{sample}_initial_map_to_genome.pe.stderr.log"),
+            "{sample}_initial_map_to_genome.se.stderr.log"),
 
     shell:
         "(STAR \
         --runMode alignReads \
         --runThreadN {threads} \
         --genomeDir {params.genome} \
-        --readFilesIn {input.reads1} {input.reads2} \
+        --readFilesIn {input.reads} \
         --readFilesCommand zcat \
         --outSAMunmapped None  \
         --outFilterMultimapNmax {params.multimappers} \
@@ -111,9 +104,7 @@ rule TR_initial_map_to_genome_pe:
         ) 1> {log.stdout} 2> {log.stderr}"
 
 
-
-
-rule TR_umi_collapse_pe:
+rule TR_umi_collapse_se:
     """
         Alternative duplicate removal when UMIs are present using umitools.
     """
@@ -134,7 +125,7 @@ rule TR_umi_collapse_pe:
             config["output_dir"],
             "TR",
             "remove_duplicates",
-            "{sample}.umis.pe.bam")
+            "{sample}.umis.se.bam")
             ),
 
     params:
@@ -148,23 +139,22 @@ rule TR_umi_collapse_pe:
             config["local_log"],
             "TR",
             "preprocessing",
-            "{sample}_umi_collapse.pe.stdout.log"),
+            "{sample}_umi_collapse.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "preprocessing",
-            "{sample}_umi_collapse.pe.stderr.log"),
+            "{sample}_umi_collapse.se.stderr.log"),
 
     shell:
         "(umi_tools \
         dedup \
         -I {input.bam} \
-        --paired \
         -S {output.bam} \
         ) 1> {log.stdout} 2> {log.stderr}"
 
 
-rule TR_bam_to_fastq_pe:
+rule TR_bam_to_fastq_se:
     """
         Convert initially mapped reads back to fastq files to do mappings at the
         transcriptome and genome level, using bedtools.
@@ -187,16 +177,8 @@ rule TR_bam_to_fastq_pe:
                 config["output_dir"],
                 "TR",
                 "{experiment}",
-                "{experiment}_{name}.mate1.pe.unfiltered.fastq")
-                ),
-        fastq_mate2 = temp(
-            os.path.join(
-                config["output_dir"],
-                "TR",
-                "{experiment}",
-                "{experiment}_{name}.mate2.pe.unfiltered.fastq")
-                ),
-
+                "{experiment}_{name}.mate1.se.unfiltered.fastq")
+                )
     params:
         cluster_log_path = config["cluster_log"],
 
@@ -210,22 +192,20 @@ rule TR_bam_to_fastq_pe:
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_bam_to_fastq.pe.stdout.log"),
+            "{name}_bam_to_fastq.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_bam_to_fastq.pe.stderr.log"),
+            "{name}_bam_to_fastq.se.stderr.log"),
 
     shell:
         "(bedtools bamtofastq \
         -i {input.bam} \
-        -fq {output.fastq_mate1} \
-        -fq2 {output.fastq_mate2}; \
-        ) 1> {log.stdout} 2> {log.stderr}"
+        -fq {output.fastq_mate1};) 1> {log.stdout} 2> {log.stderr}"
 
 
-rule TR_bam_to_fastq_filtered_pe:
+rule TR_bam_to_fastq_filtered_se:
     """
         Remove duplicate reads after converting bam to fastq
         (when there are multimappers the reads will appear
@@ -236,12 +216,7 @@ rule TR_bam_to_fastq_filtered_pe:
             config["output_dir"],
             "TR",
             "{experiment}",
-            "{experiment}_{name}.mate1.pe.unfiltered.fastq"),
-        mate2 = os.path.join(
-            config["output_dir"],
-            "TR",
-            "{experiment}",
-            "{experiment}_{name}.mate2.pe.unfiltered.fastq"),
+            "{experiment}_{name}.mate1.se.unfiltered.fastq"),
 
     output:
         mate1 = temp(
@@ -249,14 +224,7 @@ rule TR_bam_to_fastq_filtered_pe:
                 config["output_dir"],
                 "TR",
                 "{experiment}",
-                "{experiment}_{name}.mate1.pe.fastq.gz")
-                ),
-        mate2 = temp(
-            os.path.join(
-                config["output_dir"],
-                "TR",
-                "{experiment}",
-                "{experiment}_{name}.mate2.pe.fastq.gz")
+                "{experiment}_{name}.mate1.se.fastq.gz")
                 ),
 
     params:
@@ -276,23 +244,20 @@ rule TR_bam_to_fastq_filtered_pe:
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_bam_to_fastq_filtered.pe.stdout.log"),
+            "{name}_bam_to_fastq_filtered.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_bam_to_fastq_filtered.pe.stderr.log"),
+            "{name}_bam_to_fastq_filtered.se.stderr.log"),
 
     shell:
         "(python {params.script} \
         --fastq_in {input.mate1} \
-        --fastq_out {output.mate1} \
-        --fastq_in2 {input.mate2} \
-        --fastq_out2 {output.mate2}; \
-        ) 1> {log.stdout} 2> {log.stderr}"
+        --fastq_out {output.mate1};) 1> {log.stdout} 2> {log.stderr}"
 
 
-rule TR_tr_quantification_pe:
+rule TR_tr_quantification_se:
     """
         Quantification of transcript isoforms using Salmon.
     """
@@ -300,16 +265,11 @@ rule TR_tr_quantification_pe:
         transcriptome = os.path.join(
             config["output_dir"],
             "TR_salmon_index"),
-        mate1 = os.path.join(
+        reads = os.path.join(
             config["output_dir"],
             "TR",
             "{experiment}",
-            "{experiment}_{name}.mate1.pe.fastq.gz"),
-        mate2 = os.path.join(
-            config["output_dir"],
-            "TR",
-            "{experiment}",
-            "{experiment}_{name}.mate2.pe.fastq.gz"),
+            "{experiment}_{name}.mate1.se.fastq.gz"),
 
     output:
         quantification = temp(
@@ -317,22 +277,22 @@ rule TR_tr_quantification_pe:
                 config["output_dir"],
                 "TR",
                 "{experiment}",
-                "tr_quantification_pe_{name}",
+                "tr_quantification_se_{name}",
                 "quant.sf")
                 ),
+
     params:
         cluster_log_path = config["cluster_log"],
         library = lambda wildcards: get_library_type(
-            config[config[wildcards.experiment][wildcards.name][0]]['mate2'],
+            config[wildcards.experiment][wildcards.name][0],
             config[config[wildcards.experiment][wildcards.name][0]]['sense']),
         outdir = os.path.join(
             config["output_dir"],
             "TR",
             "{experiment}",
-            "tr_quantification_pe_{name}"),
+            "tr_quantification_se_{name}"),
 
     shadow: "full"
-
     singularity:
         "docker://zavolab/salmon:0.11.0"
 
@@ -343,25 +303,24 @@ rule TR_tr_quantification_pe:
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_tr_quantification.pe.stdout.log"),
+            "{name}_tr_quantification.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_tr_quantification.pe.stderr.log"),
+            "{name}_tr_quantification.se.stderr.log"),
 
     shell:
         "(salmon quant \
         -i {input.transcriptome} \
         -l {params.library} \
-        -1 {input.mate1} \
-        -2 {input.mate2} \
+        -r {input.reads} \
         -o {params.outdir} \
         -p {threads} \
         ) 1> {log.stdout} 2> {log.stderr}"
 
 
-rule TR_map_to_transcriptome_pe:
+rule TR_map_to_transcriptome_se:
     """
         Map to the transcriptome treating each transcript
         as a "chromosome", using STAR.
@@ -377,12 +336,7 @@ rule TR_map_to_transcriptome_pe:
             config["output_dir"],
             "TR",
             "{experiment}",
-            "{experiment}_{name}.mate1.pe.fastq.gz"),
-        mate2 = os.path.join(
-            config["output_dir"],
-            "TR",
-            "{experiment}",
-            "{experiment}_{name}.mate2.pe.fastq.gz"),
+            "{experiment}_{name}.mate1.se.fastq.gz"),
 
     output:
         bam = temp(
@@ -392,7 +346,7 @@ rule TR_map_to_transcriptome_pe:
                 "{experiment}",
                 "tr_map",
                 "{name}",
-                "transcriptome.pe.bam")
+                "transcriptome.se.bam")
                 ),
         logfile = temp(
             os.path.join(
@@ -401,7 +355,7 @@ rule TR_map_to_transcriptome_pe:
                 "{experiment}",
                 "tr_map",
                 "{name}",
-                "transcriptome.pe.Log.final.out")
+                "transcriptome.se.Log.final.out")
                 ),
     params:
         cluster_log_path = config["cluster_log"],
@@ -418,7 +372,7 @@ rule TR_map_to_transcriptome_pe:
             "{experiment}",
             "tr_map",
             "{name}",
-            "transcriptome.pe."),
+            "transcriptome.se."),
         multimappers = config['multimappers'] + 10,
     
     shadow: "full"
@@ -433,19 +387,19 @@ rule TR_map_to_transcriptome_pe:
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_map_to_transcriptome.pe.stdout.log"),
+            "{name}_map_to_transcriptome.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_map_to_transcriptome.pe.stderr.log"),
+            "{name}_map_to_transcriptome.se.stderr.log"),
 
     shell:
         "(STAR \
         --runMode alignReads \
         --runThreadN {threads} \
         --genomeDir {params.transcriptome} \
-        --readFilesIn {input.mate1} {input.mate2} \
+        --readFilesIn {input.mate1} \
         --readFilesCommand zcat \
         --outSAMunmapped None  \
         --outFilterMultimapNmax {params.multimappers} \
@@ -466,7 +420,7 @@ rule TR_map_to_transcriptome_pe:
 
 
 
-rule TR_map_to_genome_pe:
+rule TR_map_to_genome_se:
     """
         Initial mapping to the genome using STAR.
     """
@@ -479,12 +433,7 @@ rule TR_map_to_genome_pe:
             config["output_dir"],
             "TR",
             "{experiment}",
-            "{experiment}_{name}.mate1.pe.fastq.gz"),
-        mate2 = os.path.join(
-            config["output_dir"],
-            "TR",
-            "{experiment}",
-            "{experiment}_{name}.mate2.pe.fastq.gz"),
+            "{experiment}_{name}.mate1.se.fastq.gz"),
 
     output:
         bam = os.path.join(
@@ -493,14 +442,14 @@ rule TR_map_to_genome_pe:
             "{experiment}",
             "gn_map",
             "{name}",
-            "genome.pe.bam"),
+            "genome.se.bam"),
         logfile = os.path.join(
             config["output_dir"],
             "TR",
             "{experiment}",
             "gn_map",
             "{name}",
-            "genome.pe.Log.final.out"),
+            "genome.se.Log.final.out"),
     params:
         cluster_log_path = config["cluster_log"],
         experiment_id = "{experiment}_{name}_genome",
@@ -513,8 +462,9 @@ rule TR_map_to_genome_pe:
             "{experiment}",
             "gn_map",
             "{name}",
-            "genome.pe."),
+            "genome.se."),
         multimappers = config["multimappers"]
+    
     shadow: "full"
     
     singularity:
@@ -527,19 +477,19 @@ rule TR_map_to_genome_pe:
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_map_to_genome.pe.stdout.log"),
+            "{name}_map_to_genome.se.stdout.log"),
         stderr = os.path.join(
             config["local_log"],
             "TR",
             "{experiment}",
-            "{name}_map_to_genome.pe.stderr.log"),
+            "{name}_map_to_genome.se.stderr.log"),
 
     shell:
         "(STAR \
         --runMode alignReads \
         --runThreadN {threads} \
         --genomeDir {params.genome} \
-        --readFilesIn {input.mate1} {input.mate2} \
+        --readFilesIn {input.mate1} \
         --readFilesCommand zcat \
         --outSAMunmapped None  \
         --outFilterMultimapNmax {params.multimappers} \

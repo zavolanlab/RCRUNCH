@@ -1,9 +1,6 @@
-# ________________________________________________________________________________
-# Genomic rcrunch for paired end CLIP data
-# ________________________________________________________________________________
 import os
 
-rule GN_map_STAR_pe:
+rule GN_map_STAR_se:
     """ map reads to genome"""
     input:
         genome = os.path.join(
@@ -11,39 +8,29 @@ rule GN_map_STAR_pe:
             "STAR_index",
             "chrNameLength.txt"
             ),
-        reads1 = lambda wildcards:
+        reads = lambda wildcards:
             expand(
                 os.path.join(
                     config["output_dir"],
                     "cutadapt",
-                    "{sample}_mate1.pe.cutadapt_{format}.fastq.gz"),
+                    "{sample}_mate1.se.cutadapt_{format}.fastq.gz"),
                 sample=wildcards.sample,
                 format=config[wildcards.sample]['format']
-                ),
-        reads2 = lambda wildcards:
-            expand(
-                os.path.join(
-                    config["output_dir"],
-                    "cutadapt",
-                    "{sample}_mate2.pe.cutadapt_{format}.fastq.gz"),
-                sample=wildcards.sample,
-                format=config[wildcards.sample]['format']
-                ),
-    
+            ),
     output:
         bamfile = os.path.join(
             config["output_dir"],
             "GN",
             "alignment",
             "{sample}",
-            "{sample}.pe.bam"
+            "{sample}.se.bam"
             ),
         logfile = os.path.join(
             config["output_dir"],
             "GN",
             "alignment",
             "{sample}",
-            "{sample}.pe.Log.final.out"),
+            "{sample}.se.Log.final.out"),
     params:
         cluster_log_path = config["cluster_log"],
         sample_id = "{sample}",
@@ -56,15 +43,14 @@ rule GN_map_STAR_pe:
             "GN",
             "alignment",
             "{sample}",
-            "{sample}.pe.",
+            "{sample}.se.",
             ),
         multimappers = config['multimappers']
-    
+    shadow: "full"
+
     singularity:
         "docker://zavolab/star:2.6.0a"
 
-    shadow: "full"
-    
     threads: 12
 
     log:
@@ -72,13 +58,13 @@ rule GN_map_STAR_pe:
             config["local_log"],
             "GN",
             "{sample}",
-            "map_STAR.pe.stdout.log"
+            "map_STAR.se.stdout.log"
             ),
         stderr = os.path.join(
             config["local_log"],
             "GN",
             "{sample}",
-            "map_STAR.pe.stderr.log"
+            "map_STAR.se.stderr.log"
             ),
 
     shell:
@@ -86,7 +72,7 @@ rule GN_map_STAR_pe:
         --runMode alignReads \
         --runThreadN {threads} \
         --genomeDir {params.genome} \
-        --readFilesIn {input.reads1} {input.reads2} \
+        --readFilesIn {input.reads} \
         --readFilesCommand zcat \
         --outSAMunmapped None  \
         --outFilterMultimapNmax {params.multimappers} \
@@ -105,7 +91,7 @@ rule GN_map_STAR_pe:
         ) 1> {log.stdout} 2> {log.stderr}"
 
 
-rule GN_umi_collapse_pe:
+rule GN_umi_collapse_se:
     """
         Duplicate removal when there are UMIs
     """
@@ -128,7 +114,7 @@ rule GN_umi_collapse_pe:
             config["output_dir"],
             "GN",
             "remove_duplicates",
-            "{sample}.umis.pe.bam"
+            "{sample}.umis.se.bam"
             )),
 
     params:
@@ -137,7 +123,7 @@ rule GN_umi_collapse_pe:
             config["output_dir"],
             "GN",
             "remove_duplicates",
-            "{sample}.umis.pe.metrics"
+            "{sample}.umis.se.metrics"
             ),
 
     singularity:
@@ -148,19 +134,18 @@ rule GN_umi_collapse_pe:
             config["local_log"],
             "GN",
             "{sample}",
-            "umi_collapse.pe.stdout.log"
+            "umi_collapse.se.stdout.log"
             ),
         stderr = os.path.join(
             config["local_log"],
             "GN",
             "{sample}",
-            "umi_collapse.pe.stderr.log"
+            "umi_collapse.se.stderr.log"
             ),
 
     shell:
         "(umi_tools \
         dedup \
         -I {input.bam} \
-        --paired \
         -S {output.bam} \
         ) 1> {log.stdout} 2> {log.stderr}"

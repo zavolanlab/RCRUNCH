@@ -29,7 +29,7 @@
 
   # ------------------------------------------
   # Experiment specific info - REQUIRED
-  EXPERIMENT_SET : ["PUM2_K562_ENCSR661ICQ_2"]
+  EXPERIMENT_SET : ["PUM2_K562_ENCSR661ICQ_2_paired_end", "PUM2_K562_ENCSR661ICQ_2_single_end"]
 
   # Experiment specific info - REQUIRED
   # ***Note: an experiment refers to the foreground (replicates) and background (smis) samples
@@ -38,7 +38,7 @@
             # as one sample (This functionality is useful for treating technical replicates as one sample)
             # Make sure that the samples you merge have the same sample features (e.g paired, sense, dup_type)
             # Choose an informative experiment name
-  PUM2_K562_ENCSR661ICQ_2: { 
+  PUM2_K562_ENCSR661ICQ_2_paired_end: { 
                               rbp: "PUM2",
                               replicates: ["ENCFF041KJT_ENCFF462SCV"],
                               smis: ["ENCFF616FCF_ENCFF495ZPY"],
@@ -46,14 +46,23 @@
                               window_b: 300,
                               step_size: 150,
                               background_type: "standard"}
+  PUM2_K562_ENCSR661ICQ_2_single_end: { 
+                              rbp: "PUM2",
+                              replicates: ["ENCFF462SCV"],
+                              smis: ["ENCFF495ZPY"],
+                              window_f: 300,
+                              window_b: 300,
+                              step_size: 150,
+                              background_type: "standard"}
   
   # Sample specific info - REQUIRED
+  ENCFF462SCV: { mate1: "ENCFF462SCV.chr20", paired: 1, sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
+  ENCFF495ZPY: { mate1: "ENCFF495ZPY.chr20", paired: 1, sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
   ENCFF041KJT_ENCFF462SCV: { mate1: "ENCFF041KJT.chr20", mate2: "ENCFF462SCV.chr20", paired: 2, sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
   ENCFF616FCF_ENCFF495ZPY: { mate1: "ENCFF616FCF.chr20", mate2: "ENCFF495ZPY.chr20", paired: 2, sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
-  
   # ----------------------------------------------------------------------------------------------
   # RCRUNCH specific options - REQUIRED - DEFAULT VALUES SUGGESTED 
-  method_types : ["GN"]         # options: GN, TR  if you want BOTH methods, you can specify ['GN', 'TR']
+  method_types : ["GN", "TR"]         # options: GN, TR  if you want BOTH methods, you can specify ['GN', 'TR']
                                 # This will create both transcriptomic and genomic predictions
   multimappers: 1               # change if you want to accept reads that map to multiple regions 
                                 # (the number indicates the number of regions a read can map to at
@@ -65,7 +74,6 @@
   
 
   ## RCRUNCH specific options - DEFAULTS - Use with care
-  seq_type: "pe"                # paired end - currently only paired-end seq are allowed
   motif_lengths: [6, 8]         # Motif sizes to be considered.
   peak_center : ["crosslink", "peak_center"]   # whether to use  'crosslink' (position within where most reads start)
                                 # or 'peak_center' as the center of the peak
