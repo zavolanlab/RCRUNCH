@@ -12,11 +12,11 @@ def get_mates_number(sample):
     """Get library type"""
     try:
         if config[sample]['mate2']:
-            return 2
+            return '2'
         else:
-            return 1
+            return '1'
     except KeyError:
-        return 2
+        return '1'
 
 def get_library_type(sample, sense):
     try:

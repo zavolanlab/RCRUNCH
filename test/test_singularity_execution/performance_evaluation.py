@@ -7,6 +7,7 @@ import shutil
 import re
 import io
 
+
 def main():
     """ Main function """
     __doc__ = "Evaluate the run based on expected values"
@@ -68,27 +69,31 @@ def main():
                     name2 = path2.split('/')[-1]
                     sim = getsimilarity(path1, path2)
                     df.loc[name1, name2] = sim
-            mean_sim = np.mean([df.loc['PUM2_K562_ENCSR661ICQ_2', :].mean(), df.loc[:, 'PUM2_K562_ENCSR661ICQ_2'].mean()])
-            sys.stdout.write(f'{runtype} {sample} evaluation\n') 
+            mean_sim = np.mean([df.loc['PUM2_K562_ENCSR661ICQ_2', :].mean(),
+                                df.loc[:, 'PUM2_K562_ENCSR661ICQ_2'].mean()])
+            sys.stdout.write(f'''{runtype.replace("GN","Genomic").replace("TR","Transcriptomic")} {"-".join(sample.split("_")[-2:])} evaluation\n''')
+            sys.stdout.write(f'motif similarity: {mean_sim}\n')
             if runtype == "GN":
                 sys.stdout.write(f'rmsd of crosslink centers: {rmsd}\n')
                 sys.stdout.write(f'percentage of outlier peaks: {outlier_percentage} % \n')
             
-            sys.stdout.write(f'motif similarity: {mean_sim}\n')
+
+            if mean_sim > 0.75:
+                sys.stdout.write('Motif similarity is high.Test passed 1/3\n')
+            else:
+                sys.stdout.write('Motif similarity seems to be low 1/3\n')
             if runtype == "GN":
                 if rmsd < 1.5:
-                    sys.stdout.write('Rmsd is low. Peaks are highly overlapping. Test passed. 1/3\n')
+                    sys.stdout.write('Rmsd is low. Peaks are highly overlapping. Test passed. 2/3\n')
                 else:
-                    sys.stdout.write('Rmsd seems to be too high. Peaks are far apart. 1/3\n')
+                    sys.stdout.write('Rmsd seems to be too high. Peaks are far apart. 2/3\n')
                 if outlier_percentage < 5:
-                    sys.stdout.write('Few outliers detected. Test passed. 2/3\n')
+                    sys.stdout.write('Few outliers detected. Test passed. 3/3\n')
                 else:
-                    sys.stdout.write('Too many peaks that are not found in the test runs 2/3\n')
-            if mean_sim > 0.75:
-                sys.stdout.write('Motif similarity is high.Test passed 3/3\n')
-            else:
-                sys.stdout.write('Motif similarity seems to be low 3/3\n\n')
+                    sys.stdout.write('Too many peaks are not found in the test runs 3/3\n')
+            sys.stdout.write('\n')
     return
+
 
 def getSimilarityScore(wm1, wm2):
     wm1 = np.array(wm1)
@@ -123,7 +128,7 @@ def get_wm(path):
 def getsimilarity(wm1_path, wm2_path):
     wm1 = get_wm(wm1_path)
     wm2 = get_wm(wm2_path)
-    similarity =  (
+    similarity = (
         (2 * getSimilarityScore(wm1, wm2)) / (
             getSimilarityScore(wm1, wm1) + getSimilarityScore(wm2, wm2)))
     return similarity

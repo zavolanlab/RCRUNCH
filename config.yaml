@@ -105,7 +105,7 @@
                 # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
                 # files are assumed to be in fastq.gz format
                 mate2: "ENCFF462SCV", 
-                # if file name is ENCFF041KJT.fastq.gz then add ENCFF041KJT 
+                # if file name is ENCFF462SCV.fastq.gz then add ENCFF462SCV 
                 # files are assumed to be in fastq.gz format. 
                 paired: 2, 
                 # leave as is. used for future support of single-end data

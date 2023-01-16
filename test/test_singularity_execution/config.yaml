@@ -56,10 +56,10 @@
                               background_type: "standard"}
   
   # Sample specific info - REQUIRED
-  ENCFF462SCV: { mate1: "ENCFF462SCV.chr20", paired: 1, sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
-  ENCFF495ZPY: { mate1: "ENCFF495ZPY.chr20", paired: 1, sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
-  ENCFF041KJT_ENCFF462SCV: { mate1: "ENCFF041KJT.chr20", mate2: "ENCFF462SCV.chr20", paired: 2, sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
-  ENCFF616FCF_ENCFF495ZPY: { mate1: "ENCFF616FCF.chr20", mate2: "ENCFF495ZPY.chr20", paired: 2, sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
+  ENCFF462SCV: { mate1: "ENCFF462SCV.chr20", sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
+  ENCFF495ZPY: { mate1: "ENCFF495ZPY.chr20", sense: 1, format: "encode", dup_type: "umis",  mate1_3p: "../input_files_test/mate2_3p.fasta", mate1_5p: "../input_files_test/mate2_5p.fasta" }
+  ENCFF041KJT_ENCFF462SCV: { mate1: "ENCFF041KJT.chr20", mate2: "ENCFF462SCV.chr20", sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
+  ENCFF616FCF_ENCFF495ZPY: { mate1: "ENCFF616FCF.chr20", mate2: "ENCFF495ZPY.chr20", sense: 2, format: "encode", dup_type: "umis", mate1_3p: "../input_files_test/mate1_3p.fasta", mate1_5p: "../input_files_test/mate1_5p.fasta", mate2_3p: "../input_files_test/mate2_3p.fasta", mate2_5p: "../input_files_test/mate2_5p.fasta" }
   # ----------------------------------------------------------------------------------------------
   # RCRUNCH specific options - REQUIRED - DEFAULT VALUES SUGGESTED 
   method_types : ["GN", "TR"]         # options: GN, TR  if you want BOTH methods, you can specify ['GN', 'TR']

@@ -111,7 +111,7 @@ rule TR_flag_ncRNA_reads:
         ncRNAs = config['ncRNAs'],
         ncRNA_biotypes = expand(config['ncRNA_biotypes']),
         paired = lambda wildcards:
-            config[wildcards.sample]['paired'],
+            get_mates_number(wildcards.sample),
         sense = lambda wildcards:
             config[wildcards.sample]['sense'],
 
@@ -611,8 +611,7 @@ rule TR_read_frequencies:
             "scripts",
             "mk_bam_get_read_frequencies.py"),
         paired = lambda wildcards:
-                    config[config[wildcards.experiment][wildcards.name][0]]['paired'],
-
+            get_mates_number(config[wildcards.experiment][wildcards.name][0]),
     singularity:
         "docker://zavolab/rcrunch_python:1.0.5"
 
@@ -1060,7 +1059,7 @@ rule TR_assign_to_gn_tr:
             "{experiment}",
             "{name}_assign_to_gn_tr_temp"),
         paired = lambda wildcards:
-                    config[config[wildcards.experiment][wildcards.name][0]]['paired'],
+            get_mates_number(config[wildcards.experiment][wildcards.name][0]),
         sense = lambda wildcards:
                     config[config[wildcards.experiment][wildcards.name][0]]['sense'],
 
@@ -1374,9 +1373,9 @@ rule TR_genome_coverage:
         sense_b = lambda wildcards:
             config[config[wildcards.experiment]["smis"][0]]['sense'],
         paired_f = lambda wildcards:
-            config[config[wildcards.experiment]["replicates"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["replicates"][0]),
         paired_b = lambda wildcards:
-            config[config[wildcards.experiment]["smis"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["smis"][0]),
         prefix = "{experiment}.genome_coverage",
         background_type = lambda wildcards:
             config[wildcards.experiment]["background_type"],
@@ -1496,9 +1495,9 @@ rule TR_transcriptome_coverage:
         sense_b = lambda wildcards:
             config[config[wildcards.experiment]["smis"][0]]['sense'],
         paired_f = lambda wildcards:
-            config[config[wildcards.experiment]["replicates"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["replicates"][0]),
         paired_b = lambda wildcards:
-            config[config[wildcards.experiment]["smis"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["smis"][0]),
         prefix = "{experiment}.transcriptome_coverage",
         background_type = lambda wildcards:
             config[wildcards.experiment]["background_type"]
@@ -1779,9 +1778,9 @@ rule TR_fit_peaks:
         window_size = lambda wildcards:
             config[wildcards.experiment]['window_f'],
         paired_f = lambda wildcards:
-            config[config[wildcards.experiment]["replicates"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["replicates"][0]),
         paired_b = lambda wildcards:
-            config[config[wildcards.experiment]["smis"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["smis"][0]),
         sense_f = lambda wildcards:
             config[config[wildcards.experiment]["replicates"][0]]['sense'],
         sense_b = lambda wildcards:

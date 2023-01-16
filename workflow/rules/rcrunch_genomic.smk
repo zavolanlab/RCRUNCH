@@ -112,7 +112,7 @@ rule GN_flag_ncRNA_reads:
         ncRNAs = config['ncRNAs'],
         ncRNA_biotypes = expand(config['ncRNA_biotypes']),
         paired = lambda wildcards:
-            config[wildcards.sample]['paired'],
+            get_mates_number(wildcards.sample),
         sense = lambda wildcards:
             config[wildcards.sample]['sense'],
         
@@ -583,7 +583,7 @@ rule GN_read_frequencies:
     params:
         cluster_log_path = config["cluster_log"],
         paired = lambda wildcards:
-            config[config[wildcards.experiment][wildcards.name][0]]['paired'],
+            get_mates_number(config[wildcards.experiment][wildcards.name][0]),
         script = os.path.join(
             workflow.basedir,
             "scripts",
@@ -730,9 +730,9 @@ rule GN_genome_coverage:
         sense_b = lambda wildcards:
             config[config[wildcards.experiment]["smis"][0]]['sense'],
         paired_f = lambda wildcards:
-            config[config[wildcards.experiment]["replicates"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["replicates"][0]),
         paired_b = lambda wildcards:
-            config[config[wildcards.experiment]["smis"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["smis"][0]),
         prefix = "{experiment}.gn_coverage",
         background_type = lambda wildcards:
             config[wildcards.experiment]["background_type"],
@@ -932,9 +932,9 @@ rule GN_fit_peaks:
         window_size = lambda wildcards:
             config[wildcards.experiment]['window_f'],
         paired_f = lambda wildcards:
-            config[config[wildcards.experiment]["replicates"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["replicates"][0]),
         paired_b = lambda wildcards:
-            config[config[wildcards.experiment]["smis"][0]]['paired'],
+            get_mates_number(config[wildcards.experiment]["smis"][0]),
         sense_f = lambda wildcards:
             config[config[wildcards.experiment]["replicates"][0]]['sense'],
         sense_b = lambda wildcards:
