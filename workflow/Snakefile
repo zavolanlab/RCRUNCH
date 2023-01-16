@@ -46,20 +46,16 @@ rule finish:
             # experiment=config[config["EXPERIMENT_SET"][0]]["replicates"])
 
 
-
-if config['seq_type'] == 'pe':
-    if ('TR' in config['method_types']) & ('GN' in config['method_types']):
-        include: 'rules/rcrunch_preprocessing_pe.smk'
-        include: 'rules/rcrunch_genomic_pe.smk'
-        include: 'rules/rcrunch_transcriptomic_pe.smk'
-        include: 'rules/rcrunch_motif_analysis.smk'
-    elif 'TR' in config['method_types']:
-        include: 'rules/rcrunch_preprocessing_pe.smk'
-        include: 'rules/rcrunch_transcriptomic_pe.smk'
-        include: 'rules/rcrunch_motif_analysis.smk'
-    elif 'GN' in config['method_types']:
-        include: 'rules/rcrunch_preprocessing_pe.smk'
-        include: 'rules/rcrunch_genomic_pe.smk'
-        include: 'rules/rcrunch_motif_analysis.smk'
+include: 'rules/rcrunch_preprocessing_pe.smk'
+include: 'rules/rcrunch_preprocessing_se.smk'
+include: 'rules/rcrunch_preprocessing.smk'
+include: 'rules/rcrunch_genomic_pe.smk'
+include: 'rules/rcrunch_genomic_se.smk'
+include: 'rules/rcrunch_genomic.smk'
+include: 'rules/rcrunch_transcriptomic.smk'
+include: 'rules/rcrunch_transcriptomic_pe.smk'
+include: 'rules/rcrunch_transcriptomic_se.smk'
+include: 'rules/rcrunch_motif_analysis.smk'
+include: 'rules/common.smk'
 
     
