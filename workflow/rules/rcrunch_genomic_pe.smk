@@ -58,7 +58,8 @@ rule GN_map_STAR_pe:
             "{sample}",
             "{sample}.pe.",
             ),
-        multimappers = config['multimappers']
+        multimappers = config['multimappers'],
+        mismatches = lambda wildcards: get_mismatches(wildcards.sample)
     
     singularity:
         "docker://zavolab/star:2.6.0a"
@@ -97,7 +98,7 @@ rule GN_map_STAR_pe:
         --outSAMtype BAM Unsorted \
         --outFilterScoreMinOverLread 0.2 \
         --outFilterMatchNminOverLread 0.2 \
-        --outFilterMismatchNoverLmax 0.1 \
+        --outFilterMismatchNoverLmax {params.mismatches} \
         --outFilterType BySJout \
         --outReadsUnmapped Fastx \
         --outSAMattrRGline ID:rcrunch SM:{params.sample_id} \
@@ -128,7 +129,8 @@ rule GN_flag_duplicates_pe:
             config["output_dir"],
             "GN",
             "flag_duplicates",
-            "{sample}.duplicates.pe.Processed.out.bam"))
+            "{sample}.duplicates.pe.Processed.out.bam")),
+     
 
     params:
         cluster_log_path = config["cluster_log"],
@@ -169,6 +171,69 @@ rule GN_flag_duplicates_pe:
         --outFileNamePrefix {params.outFileNamePrefix} \
         ) 1> {log.stdout} 2> {log.stderr}"
 
+rule GN_index_dupl_mappings_pe:
+    """
+        Sort and index alignments
+        according to coordinates
+    """
+    input:  
+        bam = os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.Processed.out.bam")
+
+    output:
+        bam = temp(os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.bam"
+            )),
+
+        bai = temp(os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.bam.bai"
+            )),
+    params:
+        cluster_log_path = config["cluster_log"],
+        prefix = os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.pe_temp"
+            ),
+
+    singularity:
+        "docker://zavolab/samtools:1.8"
+
+    threads: 8
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "GN",
+            "{sample}",
+            "sort_dupl_mappings.pe.stdout.log"
+            ),
+        stderr = os.path.join(
+            config["local_log"],
+            "GN",
+            "{sample}",
+            "sort_dupl_mappings.pe.stderr.log"
+            ),
+
+    shell:
+        "(samtools sort \
+        -T {params.prefix} \
+        -@ {threads} \
+        {input.bam} > {output.bam}; \
+        samtools index \
+        {output.bam} {output.bai} \
+        ) 1> {log.stdout} 2> {log.stderr}"
+
 
 rule GN_remove_duplicates_pe:
     """
@@ -180,8 +245,7 @@ rule GN_remove_duplicates_pe:
             config["output_dir"],
             "GN",
             "flag_duplicates",
-            "{sample}.duplicates.pe.Processed.out.bam"
-            ),
+            "{sample}.duplicates.pe.bam")
 
     output:
         bam = temp(os.path.join(

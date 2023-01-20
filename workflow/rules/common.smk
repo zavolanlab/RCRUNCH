@@ -35,4 +35,13 @@ def get_library_type(sample, sense):
             return "SR"
         if str(int(sense)) == '1':
             return "SF"
-        
+
+def get_mismatches(sample):
+    """Get number of mates"""
+    try:
+        if config[sample]['mismatches']:
+            return config[sample]['mismatches']
+        else:
+            return 0.1
+    except KeyError:
+        return 0.1

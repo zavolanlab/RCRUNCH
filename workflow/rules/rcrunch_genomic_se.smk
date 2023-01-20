@@ -45,7 +45,9 @@ rule GN_map_STAR_se:
             "{sample}",
             "{sample}.se.",
             ),
-        multimappers = config['multimappers']
+        multimappers = config['multimappers'],
+        mismatches = lambda wildcards: get_mismatches(wildcards.sample)
+
     shadow: "full"
 
     singularity:
@@ -83,7 +85,7 @@ rule GN_map_STAR_se:
         --outSAMtype BAM Unsorted \
         --outFilterScoreMinOverLread 0.2 \
         --outFilterMatchNminOverLread 0.2 \
-        --outFilterMismatchNoverLmax 0.1 \
+        --outFilterMismatchNoverLmax {params.mismatches} \
         --outFilterType BySJout \
         --outReadsUnmapped Fastx \
         --outSAMattrRGline ID:rcrunch SM:{params.sample_id} \
@@ -155,6 +157,69 @@ rule GN_flag_duplicates_se:
         --outFileNamePrefix {params.outFileNamePrefix} \
         ) 1> {log.stdout} 2> {log.stderr}"
 
+rule GN_index_dupl_mappings_se:
+    """
+        Sort and index alignments
+        according to coordinates
+    """
+    input:  
+        bam = os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.se.Processed.out.bam")
+
+    output:
+        bam = temp(os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.se.bam"
+            )),
+
+        bai = temp(os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.se.bam.bai"
+            )),
+    params:
+        cluster_log_path = config["cluster_log"],
+        prefix = os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.se_temp"
+            ),
+
+    singularity:
+        "docker://zavolab/samtools:1.8"
+
+    threads: 8
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "GN",
+            "{sample}",
+            "sort_dupl_mappings.se.stdout.log"
+            ),
+        stderr = os.path.join(
+            config["local_log"],
+            "GN",
+            "{sample}",
+            "sort_dupl_mappings.se.stderr.log"
+            ),
+
+    shell:
+        "(samtools sort \
+        -T {params.prefix} \
+        -@ {threads} \
+        {input.bam} > {output.bam}; \
+        samtools index \
+        {output.bam} {output.bai} \
+        ) 1> {log.stdout} 2> {log.stderr}"
+
 
 rule GN_remove_duplicates_se:
     """
@@ -166,7 +231,13 @@ rule GN_remove_duplicates_se:
             config["output_dir"],
             "GN",
             "flag_duplicates",
-            "{sample}.duplicates.se.Processed.out.bam"
+            "{sample}.duplicates.se.bam"
+            ),
+        bai = os.path.join(
+            config["output_dir"],
+            "GN",
+            "flag_duplicates",
+            "{sample}.duplicates.se.bam.bai"
             ),
 
     output:

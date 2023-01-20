@@ -66,7 +66,8 @@ rule TR_initial_map_to_genome_pe:
             "initial_map",
             "{sample}",
             "{sample}.pe."),
-        multimappers = config["multimappers"]
+        multimappers = config["multimappers"],
+        mismatches = lambda wildcards: get_mismatches(wildcards.sample)
 
     shadow: "full"
 
@@ -103,14 +104,237 @@ rule TR_initial_map_to_genome_pe:
         --outSAMtype BAM Unsorted \
         --outFilterScoreMinOverLread 0.9 \
         --outFilterMatchNminOverLread 0.9 \
-        --outFilterMismatchNoverLmax 0.05 \
+        --outFilterMismatchNoverLmax {params.mismatches} \
         --outFilterType BySJout \
         --outReadsUnmapped None \
         --outSAMattrRGline ID:rcrunch SM:{params.sample_id} \
         --alignEndsType EndToEnd > {output.bam}; \
         ) 1> {log.stdout} 2> {log.stderr}"
 
+rule TR_flag_duplicates_pe:
+    """
+        Flag duplicate reads using the STAR flags.
+    """
+    input:
+        bam = os.path.join(
+            config["output_dir"],
+            "TR",
+            "remove_ncRNAs",
+            "{sample}.filtered.bam"),
+        bai = os.path.join(
+            config["output_dir"],
+            "TR",
+            "remove_ncRNAs",
+            "{sample}.filtered.bam.bai"),
 
+    output:
+        bam = temp(
+            os.path.join(
+                config["output_dir"],
+                "TR",
+                "flag_duplicates",
+                "{sample}.duplicates.pe.Processed.out.bam")
+                ),
+
+    params:
+        cluster_log_path = config["cluster_log"],
+        outFileNamePrefix = os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe."),
+
+    singularity:
+        "docker://zavolab/star:2.6.0a"
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_flag_duplicates.pe.stdout.log"),
+        stderr = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_flag_duplicates.pe.stderr.log"),
+
+    shell:
+        "(STAR \
+        --inputBAMfile {input.bam} \
+        --bamRemoveDuplicatesType UniqueIdenticalNotMulti \
+        --runMode inputAlignmentsFromBAM \
+        --outFileNamePrefix {params.outFileNamePrefix} \
+        ) 1> {log.stdout} 2> {log.stderr}"
+
+
+rule TR_index_dupl_mappings_pe:
+    """
+        Sort and index alignments
+        according to coordinates
+    """
+    input:  
+        bam = os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.Processed.out.bam")
+
+    output:
+        bam = temp(os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.bam"
+            )),
+
+        bai = temp(os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.bam.bai"
+            )),
+    params:
+        cluster_log_path = config["cluster_log"],
+        prefix = os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe_temp"
+            ),
+
+    singularity:
+        "docker://zavolab/samtools:1.8"
+
+    threads: 8
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "TR",
+            "{sample}",
+            "sort_dupl_mappings.pe.stdout.log"
+            ),
+        stderr = os.path.join(
+            config["local_log"],
+            "TR",
+            "{sample}",
+            "sort_dupl_mappings.pe.stderr.log"
+            ),
+
+    shell:
+        "(samtools sort \
+        -T {params.prefix} \
+        -@ {threads} \
+        {input.bam} > {output.bam}; \
+        samtools index \
+        {output.bam} {output.bai} \
+        ) 1> {log.stdout} 2> {log.stderr}"
+
+
+rule TR_remove_duplicates_pe:
+    """
+        Remove reads flagged as duplicates by STAR.
+        Custom script.
+    """
+    input:
+        bam = os.path.join(
+            config["output_dir"],
+            "TR",
+            "flag_duplicates",
+            "{sample}.duplicates.pe.bam"),
+    output:
+        bam = temp(
+            os.path.join(
+                config["output_dir"],
+                "TR",
+                "remove_duplicates",
+                "{sample}.duplicates.pe.bam")
+                ),
+
+    params:
+        cluster_log_path = config["cluster_log"],
+        script = os.path.join(
+            workflow.basedir,
+            "scripts",
+            "mk_filter_duplicates.py"),
+
+    singularity:
+        "docker://zavolab/rcrunch_python:1.0.5"
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_remove_duplicates.pe.stdout.log"),
+        stderr = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_remove_duplicates.pe.stderr.log"),
+
+    shell:
+        "(python {params.script} \
+        --bamfile {input.bam} \
+        --outfile {output.bam} \
+        ) 1> {log.stdout} 2> {log.stderr}"
+
+
+rule TR_no_duplicate_removal_pe:
+    """
+        No removal of duplicates
+    """
+    input:
+        bam = os.path.join(
+            config["output_dir"],
+            "TR",
+            "remove_ncRNAs",
+            "{sample}.filtered.bam"),
+        bai = os.path.join(
+            config["output_dir"],
+            "TR",
+            "remove_ncRNAs",
+            "{sample}.filtered.bam.bai"),
+
+    output:
+        bam = temp(
+            os.path.join(
+                config["output_dir"],
+                "TR",
+                "remove_duplicates",
+                "{sample}.with_duplicates.pe.bam")
+                ),
+        bai = temp(
+            os.path.join(
+                config["output_dir"],
+                "TR",
+                "remove_duplicates",
+                "{sample}.with_duplicates.pe.bam.bai")
+                ),
+    
+    params:
+        cluster_log_path = config["cluster_log"],
+
+    singularity:
+        "docker://bash:5.0.16"
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_no_duplicate_removal.pe.stdout.log"),
+        stderr = os.path.join(
+            config["local_log"],
+            "TR",
+            "preprocessing",
+            "{sample}_no_duplicate_removal.pe.stderr.log"),
+
+    shell:
+        "(cp {input.bam} {output.bam}; \
+        cp {input.bai} {output.bai}; \
+        ) 1> {log.stdout} 2> {log.stderr}"
 
 
 rule TR_umi_collapse_pe:
@@ -420,7 +644,10 @@ rule TR_map_to_transcriptome_pe:
             "{name}",
             "transcriptome.pe."),
         multimappers = config['multimappers'] + 10,
-    
+        mismatches = lambda wildcards: get_mismatches(
+            config[wildcards.experiment][wildcards.name][0])
+
+        
     shadow: "full"
     
     singularity:
@@ -453,7 +680,7 @@ rule TR_map_to_transcriptome_pe:
         --outFileNamePrefix {params.outFileNamePrefix} \
         --outFilterScoreMinOverLread 0.9 \
         --outFilterMatchNminOverLread 0.9 \
-        --outFilterMismatchNoverLmax 0.05 \
+        --outFilterMismatchNoverLmax {params.mismatches} \
         --outSAMattributes All \
         --outStd BAM_Unsorted \
         --outSAMtype BAM Unsorted \
@@ -514,7 +741,9 @@ rule TR_map_to_genome_pe:
             "gn_map",
             "{name}",
             "genome.pe."),
-        multimappers = config["multimappers"]
+        multimappers = config["multimappers"],
+        mismatches = lambda wildcards: get_mismatches(
+            config[wildcards.experiment][wildcards.name][0]),
     shadow: "full"
     
     singularity:
@@ -546,7 +775,7 @@ rule TR_map_to_genome_pe:
         --outFilterMultimapScoreRange 1 \
         --outFilterScoreMinOverLread 0.9 \
         --outFilterMatchNminOverLread 0.9 \
-        --outFilterMismatchNoverLmax 0.05 \
+        --outFilterMismatchNoverLmax {params.mismatches} \
         --outFileNamePrefix {params.outFileNamePrefix} \
         --outSAMattributes All \
         --outStd BAM_Unsorted \
