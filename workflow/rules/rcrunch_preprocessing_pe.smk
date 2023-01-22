@@ -74,6 +74,69 @@ rule cutadapt_pe:
         {input.reads2}) 1> {log.stdout} 2> {log.stderr}"
 
 
+rule extract_umi_pe:
+    '''
+        Extract UMIs and add them in the sequence header 
+
+    '''
+    input:
+        reads1 = os.path.join(
+            config["output_dir"],
+            "cutadapt",
+            "{sample}_mate1.pe.cutadapt_standard.fastq.gz"),
+
+        reads2 = os.path.join(
+            config["output_dir"],
+            "cutadapt",
+            "{sample}_mate2.pe.cutadapt_standard.fastq.gz"),
+    
+    output:
+        reads1 = os.path.join(
+            config["output_dir"],
+            "cutadapt",
+            "{sample}_mate1.pe.cutadapt_umi.fastq.gz"),
+        reads2 = os.path.join(
+            config["output_dir"],
+            "cutadapt",
+            "{sample}_mate2.pe.cutadapt_umi.fastq.gz")
+
+    params:
+        cluster_log_path = config["cluster_log"],
+        log = os.path.join(
+            config["output_dir"],
+            "cutadapt",
+            "{sample}.extractumis.log"),
+        umi = lambda wildcards: get_umi(wildcards.sample)
+
+    singularity:
+        "docker://quay.io/biocontainers/umi_tools:1.1.2--py38h4a8c8d9_0"
+
+    threads: 8
+
+    log:
+        stdout = os.path.join(
+            config["local_log"],
+            "preprocessing",
+            "extract_umi__{sample}.pe.stdout.log"
+            ),
+        stderr = os.path.join(
+            config["local_log"],
+            "preprocessing",
+            "extract_umi__{sample}.pe.stderr.log"
+            )
+
+    shell:
+        "(umi_tools extract \
+        --extract-method=string \
+        --stdin={input.reads1} \
+        --bc-pattern={params.umi} \
+        --log={params.log} \
+        --stdout={output.reads1} \
+        --read2-in={input.reads2} \
+        --read2-out={output.reads2} \
+        --log2stderr) 1> {log.stdout} 2> {log.stderr}"
+
+
 rule umi_tools_format_pe:
     """
         Create a UMI-tools barcode collapse format for any ENCODE samples.

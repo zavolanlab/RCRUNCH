@@ -45,3 +45,13 @@ def get_mismatches(sample):
             return 0.1
     except KeyError:
         return 0.1
+
+def get_umi(sample):
+    """Get number of mates"""
+    try:
+        if config[sample]['umi']:
+            return config[sample]['umi']
+        else:
+            return None
+    except KeyError:
+        return None

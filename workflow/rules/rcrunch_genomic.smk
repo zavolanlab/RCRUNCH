@@ -170,6 +170,12 @@ rule GN_remove_ncRNA_reads:
             "alignment",
             "{sample}_sorted.bam"
             ),
+        bai = os.path.join(
+            config["output_dir"],
+            "GN",
+            "alignment",
+            "{sample}_sorted.bam.bai"
+        ),
         read_names = os.path.join(
             config["output_dir"],
             "GN",
